@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser("save an object from s3")
     parser.add_argument("-b", "--bucket-name", reguired=True, action='store', help='Name of a bucket to get a file from')
-    parser.add_argument("-k", "--object-key", reguired=True, action='store', help='Path to a particular file in s3')
+    parser.add_argument("-k", "--object-key", required=True, action='store', help='Path to a particular file in s3')
     parser.add_argument("-r", "--region", default=None, action='store', help='AWS region in which the bucket resides. If left empty, will be filled using default profile in ~/aws/config.')
     parser.add_argument("-p", "--profile", default=None, action='store', help='Profile to use')
 
