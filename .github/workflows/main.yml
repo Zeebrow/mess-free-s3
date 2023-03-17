@@ -17,12 +17,12 @@ jobs:
     
     - name: debug
       run: |
-      ls -lath
-      echo '---------------------'
-      pwd
-      echo '---------------------'
-      env
-      echo '---------------------'
+        ls -lath
+        echo '---------------------'
+        pwd
+        echo '---------------------'
+        env
+        echo '---------------------'
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
