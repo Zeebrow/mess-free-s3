@@ -5,6 +5,9 @@ import pytest
 import tempfile
 import os
 import sys
+from pathlib import Path
+import shutil
+import warnings
 
 from s3_requests.signer import get_signing_key, AWSConfig, AWSCredentials
 
@@ -72,10 +75,43 @@ def bad_aws_config():
     yield config_file
     os.unlink(config_file)
 
+@pytest.fixture
+def aws_config_with_dir(monkeypatch):
+    """
+    Returns the absolute filepath to a valid AWS config file.
+    Sets the HOME environment variable to a temp dir.
+    """
+    user_home = Path(tempfile.mkdtemp())
+    aws_dir = user_home / ".aws"
+    aws_dir.mkdir()
+    config_file = Path(aws_dir / "config")
+    config_file.touch()
 
-def test_fixtures_work_lol(aws_credentials, aws_config):
+    contents = dedent("""\
+        [default]
+        region = us-east-1
+        output = json
+        [profile profile1]
+        region = cn-northwest-1
+        output = text
+    """)
+    with config_file.open('w') as f:
+        f.write(contents)
+
+    with monkeypatch.context() as m:
+        if sys.platform in ['linux', 'darwin']:
+            m.setenv("HOME", str(user_home.absolute()))
+        elif sys.platform == 'win32':
+            m.setenv("UserProfile", str(user_home.absolute()))  # should be fine™
+        yield config_file
+
+    shutil.rmtree(user_home)
+
+
+def test_fixtures_work(aws_credentials, aws_config, aws_config_with_dir):
     assert aws_config
     assert aws_credentials
+    assert aws_config_with_dir
 
 
 ##############################################################################
@@ -85,14 +121,16 @@ def test_fixtures_work_lol(aws_credentials, aws_config):
 # filepath
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_CONFIG_FILE
 ################
-def test_aws_config_filepath_os_dependencies(aws_config):
-    assert AWSConfig(config_filepath=aws_config)
-    if sys.platform == 'linux':
-        config = AWSConfig(config_filepath=None)
-        assert config.config_filepath == os.path.join(os.path.expanduser("~"), ".aws", "config")
-    else:
-        with pytest.raises(NotImplementedError):
+def test_aws_config_filepath_os_dependencies(aws_config_with_dir):
+        assert AWSConfig(config_filepath=aws_config_with_dir)
+        if sys.platform in ['linux', 'darwin']:
             config = AWSConfig(config_filepath=None)
+            assert config.config_filepath == os.path.join(os.path.expanduser("~"), ".aws", "config")
+        elif sys.platform == 'win32':
+            with pytest.raises(NotImplementedError):
+                config = AWSConfig(config_filepath=None)
+        else:
+            warnings.warn("Possibly unsupported platform '{}'".format(sys.platform))
 
 
 def test_aws_config_filepath_hardcode_overrides_default(aws_config, monkeypatch):

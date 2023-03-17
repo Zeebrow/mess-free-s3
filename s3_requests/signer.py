@@ -115,7 +115,7 @@ class AWSConfig:
     def _get_config_filepath(self, config_filepath=None) -> str:
         """
         returns the absolute path to a a file, or raises
-        order of presedence is hardcoded -> AWS_CONFIG_FILE -> default
+        order of presedence is hardcoded -> AWS_CONFIG_FILE -> $HOME/.aws/config on Linux, %UserProfile%\\.aws\\config on Windows
 
         https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_CONFIG_FILE
         """
