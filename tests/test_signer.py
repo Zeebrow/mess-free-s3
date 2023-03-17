@@ -75,6 +75,7 @@ def bad_aws_config():
     yield config_file
     os.unlink(config_file)
 
+
 @pytest.fixture
 def aws_config_with_dir(monkeypatch):
     """
@@ -122,15 +123,15 @@ def test_fixtures_work(aws_credentials, aws_config, aws_config_with_dir):
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_CONFIG_FILE
 ################
 def test_aws_config_filepath_os_dependencies(aws_config_with_dir):
-        assert AWSConfig(config_filepath=aws_config_with_dir)
-        if sys.platform in ['linux', 'darwin']:
+    assert AWSConfig(config_filepath=aws_config_with_dir)
+    if sys.platform in ['linux', 'darwin']:
+        config = AWSConfig(config_filepath=None)
+        assert config.config_filepath == os.path.join(os.path.expanduser("~"), ".aws", "config")
+    elif sys.platform == 'win32':
+        with pytest.raises(NotImplementedError):
             config = AWSConfig(config_filepath=None)
-            assert config.config_filepath == os.path.join(os.path.expanduser("~"), ".aws", "config")
-        elif sys.platform == 'win32':
-            with pytest.raises(NotImplementedError):
-                config = AWSConfig(config_filepath=None)
-        else:
-            warnings.warn("Possibly unsupported platform '{}'".format(sys.platform))
+    else:
+        warnings.warn("Possibly unsupported platform '{}'".format(sys.platform))
 
 
 def test_aws_config_filepath_hardcode_overrides_default(aws_config, monkeypatch):
