@@ -17,6 +17,8 @@ jobs:
     
     - name: debug
       run: |
+        [ -f requirements.txt ] && rm requirements.txt
+        ln -s requirements-text.txt requirements.txt
         ls -lath
         echo '---------------------'
         pwd
@@ -33,8 +35,6 @@ jobs:
 
     - name: pytest
       run: |
-        [ -f requirements.txt ] && rm requirements.txt
-        ln -s requirements-text.txt requirements.txt
         pip install -r requirements-test.txt
         flake8
         coverage run
