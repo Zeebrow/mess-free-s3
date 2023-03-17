@@ -13,7 +13,7 @@ jobs:
     #continue-on-error: true
     steps:
     - name: source checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: debug
       run: |
@@ -28,12 +28,10 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        architecture: 'x64'
-        cache: pip
 
     - name: pytest
       run: |
-        pip install -r requirements-test.txt
+        pip install -r requirements-dev.txt
         flake8
         coverage run
 
