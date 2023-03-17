@@ -13,7 +13,7 @@ jobs:
     #continue-on-error: true
     steps:
     - name: source checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
     
     - name: debug
       run: |
