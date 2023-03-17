@@ -102,7 +102,8 @@ if __name__ == '__main__':
 
     region = 'us-east-1'
     bucket_name = 'bs-bucket-asdfasdf2'
-    object_key = 'extra-page.html'
+    object_key = 'extra-page.html'  # 'block public access' on
+
 
     parser = argparse.ArgumentParser("save an object from s3")
     parser.add_argument("-b", "--bucket-name", default=bucket_name, action='store', help='Name of a bucket to get a file from')
