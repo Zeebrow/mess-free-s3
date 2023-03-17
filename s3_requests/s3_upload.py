@@ -105,6 +105,7 @@ if __name__ == '__main__':
     object_key = 'extra-page.html'  # 'block public access' on
 
 
+
     parser = argparse.ArgumentParser("save an object from s3")
     parser.add_argument("-b", "--bucket-name", default=bucket_name, action='store', help='Name of a bucket to get a file from')
     parser.add_argument("-k", "--object-key", default=object_key, action='store', help='Path to a particular file in s3')
