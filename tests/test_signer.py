@@ -40,7 +40,6 @@ def bad_aws_credentials():
     os.unlink(credentials_file)
 
 
-# NOTE: output is unused but here for completeness
 @pytest.fixture
 def aws_config():
     _, config_file = tempfile.mkstemp()

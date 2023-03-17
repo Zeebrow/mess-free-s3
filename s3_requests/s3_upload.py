@@ -100,24 +100,19 @@ if __name__ == '__main__':
         logger.debug("status={}".format(response.status_code))
         return response.text
 
-    region = 'us-east-1'
-    bucket_name = 'bs-bucket-asdfasdf2'
-    object_key = 'extra-page.html'  # 'block public access' on
-
-
-
     parser = argparse.ArgumentParser("save an object from s3")
-    parser.add_argument("-b", "--bucket-name", default=bucket_name, action='store', help='Name of a bucket to get a file from')
-    parser.add_argument("-k", "--object-key", default=object_key, action='store', help='Path to a particular file in s3')
-    parser.add_argument("-r", "--region", default=region, action='store', help='AWS region in which the bucket resides. If left empty, will be filled using default profile in ~/aws/config.')
-    parser.add_argument("-p", "--profile", default='default', action='store', help='Profile to use')
+    parser.add_argument("-b", "--bucket-name", reguired=True, action='store', help='Name of a bucket to get a file from')
+    parser.add_argument("-k", "--object-key", reguired=True, action='store', help='Path to a particular file in s3')
+    parser.add_argument("-r", "--region", default=None, action='store', help='AWS region in which the bucket resides. If left empty, will be filled using default profile in ~/aws/config.')
+    parser.add_argument("-p", "--profile", default=None, action='store', help='Profile to use')
 
     args = parser.parse_args()
-
+    config = AWSConfig(region=args.region, profile=args.profile)
+    creds = AWSCredentials(profile=args.profile, credentials_filepath=args.credentials_filepath)
 
     obj = get_s3_object(region=args.region, profile=args.profile, bucket_name=args.bucket_name, object_key=args.object_key)
     print(obj)
-    filename = object_key.split('/')[-1]
+    filename = args.object_key.split('/')[-1]
 
     with open(filename, 'w') as f:
         f.write(obj)
