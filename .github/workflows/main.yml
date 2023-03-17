@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        os: ["ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: 'x64'
+        cache: pip
+
+    - name: pytest
+      run: |
+        pip install -r requirements-test.txt
+        flake8
+        coverage run
+

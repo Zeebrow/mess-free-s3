@@ -1,0 +1,9 @@
+[flake8]
+ignore = E501,E128,E266,F401
+filename = 
+  ./s3_requests/*.py
+  ./tests/test_*.py
+  ./tests/*_test.py
+per-file-ignores =
+  tests/*_test.py:E121,E123,E126
+  tests/test_*.py:E121,E123,E126
