@@ -8,22 +8,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
         os: ["ubuntu-latest", "windows-latest"]
     runs-on: ${{ matrix.os }}
     steps:
     - name: source checkout
       uses: actions/checkout@v3
     
-    - name: debug
-      run: |
-        ls -lath
-        echo '---------------------'
-        pwd
-        echo '---------------------'
-        env
-        echo '---------------------'
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
