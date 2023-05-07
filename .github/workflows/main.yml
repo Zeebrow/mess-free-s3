@@ -8,10 +8,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10, 3.11]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
     steps:
+    - name: debug
+      run: |
+        echo ${{ matrix.python-version }}
+        echo  contains matrix.python-version, "3.7" ${{ contains(matrix.python-version, "3.7" }} 
+        echo ${{ matrix.python-version }}
+        echo ${{ matrix.python-version }}
+
     - name: source checkout
       uses: actions/checkout@v3
     
@@ -25,7 +32,7 @@ jobs:
         pip install -r requirements-dev.txt
         flake8
         coverage run
-      if: ${{ matrix.python-version > 3.7 }}
+      if: ${{ matrix.python-version != 3.7 }}
 
     - name: test and lint for python3.7
       run: |
