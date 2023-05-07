@@ -25,11 +25,11 @@ jobs:
         pip install -r requirements-dev.txt
         flake8
         coverage run
-      if: !contains(matrix.python-version, "3.7")
+      if: !contains(${{ matrix.python-version }}, "3.7")
 
     - name: test and lint for python3.7
       run: |
         pip install -r requirements-dev-37.txt
         flake8
         coverage run
-      if: contains(matrix.python-version, "3.7")
+      if: contains(${{ matrix.python-version }}, "3.7")
