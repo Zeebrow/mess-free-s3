@@ -12,13 +12,6 @@ jobs:
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: debug
-      run: |
-        echo these all work fine:
-        echo ${{ matrix.python-version }}
-        echo  contains 'matrix.python-version', '3.7' ${{ contains(matrix.python-version, '3.7') }} 
-        echo  'matrix.python-version' != 3.7 ${{ matrix.python-version != 3.7 }}
-        echo  'matrix.python-version' == 3.7 ${{ matrix.python-version == 3.7 }}
 
     - name: source checkout
       uses: actions/checkout@v3
@@ -33,6 +26,7 @@ jobs:
         pip install -r requirements-dev.txt
         flake8
         coverage run
+      # note this does get correctly interpreted for 3.10
       if: ${{ matrix.python-version > 3.7 }}
 
     - name: test and lint for python3.7
