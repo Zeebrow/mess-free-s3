@@ -15,7 +15,7 @@ jobs:
     - name: debug
       run: |
         echo ${{ matrix.python-version }}
-        echo  contains matrix.python-version, "3.7" ${{ contains(matrix.python-version, "3.7" }} 
+        echo  contains matrix.python-version, '3.7' ${{ contains(matrix.python-version, '3.7' }} 
         echo ${{ matrix.python-version }}
         echo ${{ matrix.python-version }}
 
