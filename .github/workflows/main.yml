@@ -31,3 +31,4 @@ jobs:
         pip install -r requirements-dev-37.txt
         flake8
         coverage run
+      if: ${{ matrix.python-version }} == "3.7"
