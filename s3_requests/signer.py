@@ -22,6 +22,21 @@ REGIONS = [
 
 class AWSCredentials:
     """
+    Retrieves your AWS credentials in the following manner:
+
+    1. hardcoded: Explicitly initializing the AWSCredentials object with values for
+    `aws_access_key_id` and `aws_secret_access_key`.
+    1. environment: variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` override
+    values retrieved from the shared credentials file (whether or not they exist).
+    1. shared credentials file: If either `aws_access_key_id` or `aws_secret_access_key`
+    are not set according to the above, values from the shared credentials file replace
+    the value for the one that exists, and set a value for the one that does not. The
+    shared credentials file's default location is `$HOME/.aws/credentials`, and may be
+    overriden by hardcoding `credentials_filepath` or setting the `AWS_SHARED_CREDENTIALS_FILE`
+    environment variable (hardcoding takes precedence). If `profile` is not set with
+    a hardcoded value or with the `AWS_PROFILE` environment variable, the credentials
+    under the `[default]` heading will be used.
+
     """
     def __init__(self, profile=None, credentials_filepath=None, aws_access_key_id=None, aws_secret_access_key=None) -> None:
         self.credentials_filepath = self._get_cred_filepath(credentials_filepath)
@@ -46,9 +61,10 @@ class AWSCredentials:
         precedence is hardcoded -> AWS_SHARED_CREDENTIALS_FILE -> platform default
         """
         # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_SHARED_CREDENTIALS_FILE
-
         if credentials_filepath is not None:
             if not os.path.exists(credentials_filepath):
+                # @Bug: should not raise if credentials are already set - but needs
+                # to be called before credentials are set!!
                 raise FileNotFoundError("No credentials file exists at {}".format(credentials_filepath))
             return credentials_filepath
 
@@ -68,7 +84,7 @@ class AWSCredentials:
     def _get_profile(self, profile=None):
         """
         returns the name of a profile or 'default'
-        assumes that a config file exists at self.config_filepath and is a valid .inri file
+        assumes that a config file exists at self.config_filepath and is a valid .ini file
         order of presedence is hardcoded -> AWS_PROFILE environment variable -> 'default'
         """
         if profile:
@@ -85,6 +101,7 @@ class AWSCredentials:
             return aws_access_key_id
         parser = ConfigParser()
         parser.read(self.credentials_filepath)
+        # raises here if no default profile
         creds_access_key_id = parser[self.profile].get("aws_access_key_id", None)
         aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID", creds_access_key_id)
         return aws_access_key_id

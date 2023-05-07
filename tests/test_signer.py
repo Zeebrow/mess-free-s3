@@ -306,6 +306,36 @@ def test_aws_creds_raises_filenotfound_hardcoded():
 # profile
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_PROFILE
 ####################
+def test_aws_creds_profile_raises_when_no_default(bad_aws_credentials):
+    """note this might already be tested"""
+    with pytest.raises(KeyError):
+        AWSCredentials(credentials_filepath=bad_aws_credentials)
+
+
+@pytest.mark.xfail
+def test_aws_creds_profile_doesnt_care_if_no_such_file_when_creds_are_set():
+    """this is bad behavior"""
+    creds = AWSCredentials(
+        aws_access_key_id='AKIA1234567890ABCDEF',
+        aws_secret_access_key='BASE64STRING+/length40abcdefghijklmnopqr',
+        credentials_filepath='does_not_exist',
+    )
+    assert creds.aws_access_key_id == 'AKIA1234567890ABCDEF'
+    assert creds.aws_secret_access_key == 'BASE64STRING+/length40abcdefghijklmnopqr'
+
+
+def test_aws_creds_profile_doesnt_care_if_bad_profile_when_creds_are_set(aws_credentials):
+    """note this might already be tested"""
+    creds = AWSCredentials(
+        aws_access_key_id='AKIA1234567890ABCDEF',
+        aws_secret_access_key='BASE64STRING+/length40abcdefghijklmnopqr',
+        credentials_filepath=aws_credentials,
+        profile='does_not_exist'
+    )
+    assert creds.aws_access_key_id == 'AKIA1234567890ABCDEF'
+    assert creds.aws_secret_access_key == 'BASE64STRING+/length40abcdefghijklmnopqr'
+
+
 def test_aws_creds_profile_default(aws_credentials):
     creds = AWSCredentials(credentials_filepath=aws_credentials)
     assert creds.profile == 'default'
