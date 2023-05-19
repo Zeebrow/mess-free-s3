@@ -63,9 +63,7 @@ class AWSCredentials:
         # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list-AWS_SHARED_CREDENTIALS_FILE
         if credentials_filepath is not None:
             if not os.path.exists(credentials_filepath):
-                # @Bug: should not raise if credentials are already set - but needs
-                # to be called before credentials are set!!
-                raise FileNotFoundError("No credentials file exists at {}".format(credentials_filepath))
+                return None
             return credentials_filepath
 
         if sys.platform == 'linux':

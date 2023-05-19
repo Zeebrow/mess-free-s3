@@ -292,14 +292,9 @@ def test_aws_creds_filepath_environ_overrides_default(aws_credentials, monkeypat
 def test_aws_creds_raises_filenotfound_default(monkeypatch):
     with pytest.raises(FileNotFoundError):
         with monkeypatch.context() as m:
-            # TIL: os.path.expanduser("~") relies on the HOME environment variable (linux)
+            # m.setenv("UserProfile", "/path/to/nowhere")
             m.setenv("HOME", "/path/to/nowhere")
             AWSCredentials()
-
-
-def test_aws_creds_raises_filenotfound_hardcoded():
-    with pytest.raises(FileNotFoundError):
-        AWSCredentials(credentials_filepath='/path/to/nowhere')
 
 
 ####################
@@ -312,7 +307,6 @@ def test_aws_creds_profile_raises_when_no_default(bad_aws_credentials):
         AWSCredentials(credentials_filepath=bad_aws_credentials)
 
 
-@pytest.mark.xfail
 def test_aws_creds_profile_doesnt_care_if_no_such_file_when_creds_are_set():
     """this is bad behavior"""
     creds = AWSCredentials(
