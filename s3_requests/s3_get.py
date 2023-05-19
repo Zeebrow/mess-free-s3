@@ -44,10 +44,9 @@ def post_s3_auth_headers(bucket_name, object_key, query_string='', aws_service=A
 
     pass
 
+
 def get_s3_auth_headers(bucket_name, object_key, aws_service=AWS_SERVICE, profile=None, region=None, byte_range='0-') -> dict:
-    """
-    
-    """
+    """"""
     creds = AWSCredentials(profile=profile)
     profile = AWSConfig(profile=profile, region=region)
 
@@ -71,7 +70,7 @@ def get_s3_auth_headers(bucket_name, object_key, aws_service=AWS_SERVICE, profil
     # we use 4 headers to calculate the signature because don't touch it it works
 
     # Instead of seeing a blank line in the canonical request
-    query_string='', 
+    query_string = '',
     cr = dedent(f"""\
     GET
     /{bucket_name}/{object_key}
